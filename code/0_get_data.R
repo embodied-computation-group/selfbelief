@@ -1,6 +1,15 @@
 library(tidyverse)
+# for partial correlation
+library(ppcor)
+library(corrplot)
+
+# for linear model
+library(lme4)
+library(sjPlot) # table functions
+library(sjmisc) # sample data
 
 
+# import the data
 
 metacog_data <- read_delim("data/mle_fit_data_wide.csv", ",", escape_double = FALSE, trim_ws = TRUE) %>%
   dplyr::select(subject,matches("^(avg_conf_|mratio_|da_)"))
@@ -69,13 +78,11 @@ result_data <- filtered_data %>%
     GDPSBScoreDiff = diff_acc_gdp_post - diff_acc_gdp_pre,
   )
 
-write.csv(result_data, file = "sb-update/data/sbupdate_alldata.csv")
+write.csv(result_data, file = "data/sbupdate_alldata.csv")
 
 
-## partial correlation matrix
+## fit partial correlation matrix
 
-library(ppcor)
-library(corrplot)
 
 selected_vars <- result_data[,grepl("self_.*_pre|self_.*_post|avg_conf_.*", names(result_data))]
 
@@ -83,9 +90,8 @@ selected_vars_complete_cases <- na.omit(selected_vars)
 
 pcor_matrix <- pcor(selected_vars_complete_cases)$estimate
 
-pcor_matrix <- pcor(selected_vars)$estimate
 
-png("sb-update/figures/partial_correlation_matrix.png", width = 1200, height = 1200)
+png("figures/partial_correlation_matrix.png", width = 1200, height = 1200)
 
 # Plotting the partial correlation matrix
 corrplot(pcor_matrix, method = "color", type = "full",
@@ -94,12 +100,11 @@ corrplot(pcor_matrix, method = "color", type = "full",
 dev.off()
 
 
-## lmer of demo variables
-
+## lmer of demographic variables
 
 
 self_data <- result_data %>% 
-  select(subjID, age, gender.x, years_edu, self_memory_pre:self_gdp_pre, self_memory_post:self_gdp_post) %>% 
+  dplyr::select(subjID, age, gender.x, years_edu, self_memory_pre:self_gdp_pre, self_memory_post:self_gdp_post) %>% 
   filter(gender.x == c("Masculin","Feminin"))
 
 # Assuming your data frame is named self_data
@@ -116,20 +121,15 @@ long_self_data <- self_data %>%
   )
 
 
-library(lme4)
-library(sjPlot) # table functions
-library(sjmisc) # sample data
-
 # Fit the linear mixed-effects model
 model <- lmer(value ~ time * modality + age + gender.x + years_edu + (1 | subjID), data = long_self_data)
 
+# save results to table file in word
 
-sjt.lmer(model)
+tab_model(model, file = "docs/controlmodel1.doc")
 
 
-# Summary of the model to see results
-summary(model)
 
-write_csv(long_self_data, "data/long_self_data.csv")
+
 
 
