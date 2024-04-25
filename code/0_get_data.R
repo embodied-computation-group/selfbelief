@@ -23,7 +23,8 @@ survey_data_post <- read_delim("data/self_belief_post_labels.csv", ";", escape_d
   dplyr::select(Sid, matches("^self_"))
 
 
-acc_data <- read_csv("data/t1.csv")
+acc_data <- read_csv("data/t1.csv") %>% 
+  dplyr::select(subj, matches("^acc_"), matches("^rt_"))
 
 
 
@@ -51,7 +52,7 @@ head(full_data)
 
 
 
-# Filter out subject "996"
+# Filter out subject "996", was a practice run i.e. not real data
 filtered_data <- full_data %>%
   filter(subjID != "996")
 
@@ -104,8 +105,8 @@ dev.off()
 
 
 self_data <- result_data %>% 
-  dplyr::select(subjID, age, gender.x, years_edu, self_memory_pre:self_gdp_pre, self_memory_post:self_gdp_post) %>% 
-  filter(gender.x == c("Masculin","Feminin"))
+  dplyr::select(subjID, age, gender, years_edu, self_memory_pre:self_gdp_pre, self_memory_post:self_gdp_post) %>% 
+  filter(gender == c("Masculin","Feminin"))
 
 # Assuming your data frame is named self_data
 long_self_data <- self_data %>% 
@@ -122,7 +123,7 @@ long_self_data <- self_data %>%
 
 
 # Fit the linear mixed-effects model
-model <- lmer(value ~ time * modality + age + gender.x + years_edu + (1 | subjID), data = long_self_data)
+model <- lmer(value ~ time * modality + age + gender + years_edu + (1 | subjID), data = long_self_data)
 
 # save results to table file in word
 
