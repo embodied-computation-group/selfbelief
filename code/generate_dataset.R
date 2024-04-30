@@ -7,6 +7,8 @@ library(dplyr)
 library(rstatix)
 library(tibble)
 
+
+
 # load data ---------------------------------------------------------------
 data_meta <- read.csv('./data/metacognition_TrialData_master.csv')
 sb_pre <- read.table('./data/self_belief_pre_labels.csv', sep = ";", header = T) 
@@ -199,14 +201,37 @@ sum(duplicated(final_data$subj))
 # save dataset as csv
 write.csv(final_data, file = "./data/SB_data.csv")
 
+# for partial correlation plot
+library(ppcor)
+library(corrplot)
 
+# for linear model
+library(lme4)
+library(sjPlot) # table functions
+library(sjmisc) # sample data
 
 ## fit partial correlation matrix
 
+selected_data <- final_data %>%
+  dplyr::select(
+    contains("sb_pre_"),  # Select all columns that contain 'sb_pre_'
+    contains("sb_post_"), # Select all columns that contain 'sb_post_'
+    contains("conf_")     # Select all columns that contain 'conf_'
+  ) %>%
+  dplyr::select(
+    -contains("_avg"),   # Drop columns that contain '_avg'
+    -contains("_diff")   # Drop columns that contain '_diff'
+  )
 
-selected_vars <- final_data[,grepl("sb_pre_.*|sb_pre_.*|avg_conf_.*", names(final_data))]
 
-selected_vars_complete_cases <- na.omit(selected_vars)
+reordered_data <- selected_data %>%
+  dplyr::select(
+    sb_pre_vis, sb_pre_mem, sb_pre_cal, sb_pre_gdp,   # All 'pre self beliefs' in order of vision, memory, calories, GDP
+    sb_post_vis, sb_post_mem, sb_post_cal, sb_post_gdp, # All 'post self beliefs' in order of vision, memory, calories, GDP
+    conf_vis, conf_mem, conf_cal, conf_gdp             # All 'confidence' in order of vision, memory, calories, GDP
+  )
+
+selected_vars_complete_cases <- na.omit(reordered_data)
 
 pcor_matrix <- pcor(selected_vars_complete_cases)$estimate
 
@@ -224,8 +249,10 @@ dev.off()
 
 
 self_data <- final_data %>% 
-  dplyr::select(subj, age, gender, years_edu, sb_pre_mem:sb_pre_gdp, sb_post_mem:sb_post_gdp) %>% 
-  filter(gender == c("Masculin","Feminin"))
+  dplyr::select(subj, age, gender, years_edu, sb_pre_mem:sb_pre_cal, sb_post_mem:sb_post_cal) %>% 
+  mutate(subj = as.factor(subj),
+         gender = as.factor(gender)) %>% 
+  filter(gender != "non-binary")
 
 # Assuming your data frame is named self_data
 long_self_data <- self_data %>% 
@@ -237,13 +264,16 @@ long_self_data <- self_data %>%
   ) %>%
   mutate(
     time = recode(time, 'pre' = 'Before', 'post' = 'After'), # Optionally, recode the 'time' values for clarity
-    domain = recode(domain, 'mem' = 'Memory', 'vis' = 'Visual', 'cal' = 'Calories', 'gdp' = 'GDP') # Optionally, recode the 'modality' values for clarity
+    domain = recode(domain, 'mem' = 'Memory', 'vis' = 'Visual', 'cal' = 'Calories', 'gdp' = 'GDP'), # Optionally, recode the 'modality' values for clarity
+    time = as.factor(time),
+    domain = as.factor(domain)
   )
 
 
 # Fit the linear mixed-effects model
 model <- lmer(value ~ time * domain + age + gender + years_edu + (1 | subj), data = long_self_data)
 
+summary(model)
 # save results to table file in word
 
 tab_model(model, file = "docs/controlmodel1.doc")
