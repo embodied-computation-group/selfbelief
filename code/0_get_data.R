@@ -76,7 +76,7 @@ result_data <- filtered_data %>%
     GDPSBScoreDiff = diff_acc_gdp_post - diff_acc_gdp_pre,
   )
 
-write.csv(result_data, file = "data/sbupdate_alldata.csv")
+write.csv(result_data, file = "data/SB_data.csv")
 
 
 ## fit partial correlation matrix
@@ -113,7 +113,9 @@ dev.off()
 
 self_data <- result_data %>% 
   dplyr::select(subjID, age, gender, years_edu, self_memory_pre:self_gdp_pre, self_memory_post:self_gdp_post) %>% 
-  filter(gender == c("Masculin","Feminin"))
+  mutate(subjID = as.factor(subjID),
+         gender = as.factor(gender)) %>% 
+  filter(gender != "non-binary")
 
 # Assuming your data frame is named self_data
 long_self_data <- self_data %>% 
