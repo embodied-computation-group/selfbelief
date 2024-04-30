@@ -5,6 +5,8 @@ library(tidyverse)
 # load metacognition data - from Lund et al: 
 # https://github.com/embodied-computation-group/dg-metacognition/blob/main/data_summary/mle_fit_data_wide.csv
 ## NOTE - THESE ARE THE SAME PARTICIPANTS AS IN LUND ET AL AND HOOGERVOORST ET AL - DO NOT DUPLICATE! 
+## Here we import post processed group level data following Lund et al - for trial level data see:
+## https://github.com/embodied-computation-group/dg-metacognition/blob/main/data_summary/metacognition_trialData_master.csv
 
 metacog_data <- read_delim("data/mle_fit_data_wide.csv", ",", escape_double = FALSE, trim_ws = TRUE) %>%
   dplyr::select(subject,matches("^(avg_conf_|mratio_|da_)"))
