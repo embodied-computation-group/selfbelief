@@ -154,8 +154,7 @@ all_data <- left_join(all_data, yearsedu, by = 'subj')
 all_data <- all_data %>% relocate(years_edu, .after = gender)
   
 
-# delete na's
-all_data <- na.omit(all_data)
+
 # delete outlier person
 all_data <- filter(all_data, subj!=214)
 # check duplicates
@@ -190,8 +189,7 @@ colnames(filter_mratio)[1] <- "subj"
 final_data <- left_join(result_data, filter_mratio, by = 'subj')
 
 # final sanity checks
-# delete na's
-final_data <- na.omit(final_data)
+
 # check duplicates
 sum(duplicated(final_data$subj))
 # no duplicates
