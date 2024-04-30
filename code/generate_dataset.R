@@ -10,7 +10,7 @@ library(tibble)
 
 
 # load data ---------------------------------------------------------------
-data_meta <- read.csv('./data/metacognition_TrialData_master.csv')
+data_meta <- read.csv('./data/metacognition_TrialData_master_old.csv')
 sb_pre <- read.table('./data/self_belief_pre_labels.csv', sep = ";", header = T) 
 sb_post <- read.table('./data/self_belief_post_labels.csv', sep = ";", header = T)  
 data_sub <- read.table('./data/pre_test_final.csv', sep = ";", header = T)  
@@ -37,10 +37,10 @@ data_meta <- filter(data_meta, rt>0.05)
 # remove outliers
 source('./code/remove_outliers.R')
 data_meta$rt <- remove_outliers(data_meta$rt)
-data_meta$rt_conf <- remove_outliers(data_meta$rt_conf)
+#data_meta$rt_conf <- remove_outliers(data_meta$rt_conf)
 
 # remove rows with NA
-data_meta <- na.omit(data_meta)
+#data_meta <- na.omit(data_meta)
 
 # For T1 data -------------------------------------------------------------
 # data wrangling
@@ -78,7 +78,7 @@ colnames(postf) <- c("subj", "sb_post_mem", "sb_post_vis", "sb_post_gdp", "sb_po
 postf[, c(1:5)] <- as.numeric(unlist(postf[, c(1:5)])) # because numbers were integers
 
 # merge the two sets
-selfbel <- inner_join(pref, postf, by="subj")
+selfbel <- left_join(pref, postf, by="subj")
 
 # calculate and add additional measures
 # average per modality
@@ -137,8 +137,8 @@ conffinal$avg_conf <- rowMeans(subset(conffinal[,10:13]))
 
 
 # Combine the three sets ----------------------------------------------------
-all_data <- inner_join(selfbel, t1w, by = "subj")
-all_data <- inner_join(all_data, conffinal, by = "subj")
+all_data <- left_join(selfbel, t1w, by = "subj")
+all_data <- left_join(all_data, conffinal, by = "subj")
 
 # add years education
 yearsedu <- cbind(data_sub$sID, data_sub$YearsEdu.)
@@ -157,6 +157,7 @@ all_data <- all_data %>% relocate(years_edu, .after = gender)
 
 # delete outlier person
 all_data <- filter(all_data, subj!=214)
+all_data <- filter(all_data, subj!=996)
 # check duplicates
 sum(duplicated(all_data$subj))
 # no duplicates
@@ -275,3 +276,19 @@ summary(model)
 # save results to table file in word
 
 tab_model(model, file = "docs/controlmodel1.doc")
+
+
+plot(x = final_data$sb_diff_mem, y = final_data$conf_mem)
+library(ggplot2)
+
+final_data_clean <- final_data %>%
+  filter(!is.na(sb_diff_mem) & !is.na(conf_mem) & 
+           is.finite(sb_diff_mem) & is.finite(conf_mem))
+
+
+
+ggplot(data = final_data_clean, aes(x = sb_diff_mem, y = conf_mem)) +
+  geom_point(alpha = 0.6, color = "blue") +  # semi-transparent blue points
+  geom_smooth(method = "lm", se = TRUE, color = "red")   # linear model with standard error
+  
+cor(x = final_data_clean$sb_diff_mem, y = final_data_clean$conf_mem)

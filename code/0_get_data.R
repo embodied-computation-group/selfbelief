@@ -1,29 +1,26 @@
 library(tidyverse)
-# for partial correlation
-library(ppcor)
-library(corrplot)
-
-# for linear model
-library(lme4)
-library(sjPlot) # table functions
-library(sjmisc) # sample data
 
 
 # import the data
+# load metacognition data - from Lund et al: 
+# https://github.com/embodied-computation-group/dg-metacognition/blob/main/data_summary/mle_fit_data_wide.csv
+## NOTE - THESE ARE THE SAME PARTICIPANTS AS IN LUND ET AL AND HOOGERVOORST ET AL - DO NOT DUPLICATE! 
 
 metacog_data <- read_delim("data/mle_fit_data_wide.csv", ",", escape_double = FALSE, trim_ws = TRUE) %>%
   dplyr::select(subject,matches("^(avg_conf_|mratio_|da_)"))
 
+# read in raw self belief data. includes additional surveys (MIAI and MDESQ, not analyzed here)
 
 survey_data_pre <- read_delim("data/self_belief_pre_labels.csv", ";", escape_double = FALSE, trim_ws = TRUE) %>%
   dplyr::select(Sid, age, gender, years_edu, matches("^self_"))
-#
+
 
 survey_data_post <- read_delim("data/self_belief_post_labels.csv", ";", escape_double = FALSE, trim_ws = TRUE) %>%
   dplyr::select(Sid, matches("^self_"))
 
+# read in the accuracy data from Lund et al. 
 
-acc_data <- read_csv("data/t1.csv") %>% 
+acc_data <- read_csv("data/taskAcc.csv") %>% 
   dplyr::select(subj, matches("^acc_"), matches("^rt_"))
 
 
@@ -83,6 +80,16 @@ write.csv(result_data, file = "data/sbupdate_alldata.csv")
 
 
 ## fit partial correlation matrix
+# for partial correlation
+library(ppcor)
+library(corrplot)
+
+# for linear model
+library(lme4)
+library(sjPlot) # table functions
+library(sjmisc) # sample data
+
+
 
 
 selected_vars <- result_data[,grepl("self_.*_pre|self_.*_post|avg_conf_.*", names(result_data))]
