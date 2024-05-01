@@ -6,14 +6,6 @@ Kelly Hoogervorst*1, Leah Banellis*1, and Micah G. Allen1,2
 1. Center of Functionally Integrative Neuroscience, Aarhus University, Building 1710, Universitetsbyen 3, 8000 Aarhus, Denmark  
 2. Cambridge Psychiatry, Cambridge University, UK  
 
-## Corresponding Author
-Micah G. Allen  
-Email: [micah@cfin.au.dk](mailto:micah@cfin.au.dk)  
-
-Additional Contact:
-- Kelly Hoogervorst: [kellyh@cfin.au.dk](mailto:kellyh@cfin.au.dk)
-- Leah Banellis: [leahbanellis@cfin.au.dk](mailto:leahbanellis@cfin.au.dk)
-
 ## Abstract
 Metacognitive self-monitoring of our abilities is vital for healthy cognitive functioning. This capacity to correlate subjective feelings of uncertainty with explicit self-beliefs about cognitive ability is believed to rely on a domain-general cognitive hierarchy. While substantial research supports the domain-generality of metacognitive ability, less is understood about how self-beliefs are maintained and modified in response to experiences of uncertainty. This study investigates metacognitive belief updating across various domains, including memory, visual, and general knowledge, revealing that belief updating is highly domain-specific, influenced by metacognitive testing.
 
