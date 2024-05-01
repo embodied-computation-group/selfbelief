@@ -1,8 +1,8 @@
 # Domain-specific Updating of Metacognitive Self-beliefs
 
 ## Authors
-Kelly Hoogervorst*1, Leah Banellis*1, and Micah G. Allen1,2  
-*Equal contribution  
+Kelly Hoogervorst1, Leah Banellis1, and Micah G. Allen1,2  
+ 
 1. Center of Functionally Integrative Neuroscience, Aarhus University, Building 1710, Universitetsbyen 3, 8000 Aarhus, Denmark  
 2. Cambridge Psychiatry, Cambridge University, UK  
 
