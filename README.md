@@ -12,6 +12,12 @@ Metacognitive self-monitoring of our abilities is vital for healthy cognitive fu
 ## Keywords
 Metacognition, Self-beliefs, Belief-updating, Domain generality, Perception, Memory
 
+## Citing This Work
+If you find this work useful in your research, please consider citing it as:
+
+Hoogervorst, K., Banellis, L., & Allen, M. (2023). Domain-specific updating of metacognitive self-beliefs. _PsyArxiv._
+https://osf.io/preprints/psyarxiv/knsb4
+
 ## Figures
 Inline references to figures included in the manuscript:
 ![Figure 1](figures/Figure_1.png)
@@ -23,5 +29,3 @@ Inline references to figures included in the manuscript:
 ## License
 This project is licensed under the [MIT License](LICENSE).
 
-## Citing This Work
-If you find this work useful in your research, please consider citing it. For citation details, refer to the CITATION.md file.
